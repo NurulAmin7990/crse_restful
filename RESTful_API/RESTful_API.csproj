@@ -213,6 +213,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MeetsController.cs" />
     <Compile Include="Controllers\ParentsController.cs" />
+    <Compile Include="Controllers\ParticipantsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
