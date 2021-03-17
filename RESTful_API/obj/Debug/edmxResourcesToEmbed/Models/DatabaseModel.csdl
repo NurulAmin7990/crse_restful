@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Archive">
+    <Key>
+      <PropertyRef Name="ArchiveId" />
+    </Key>
+    <Property Name="ArchiveId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Firstname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Lastname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="Permission" Type="Boolean" />
+    <Property Name="Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Child">
+    <Key>
+      <PropertyRef Name="ChildrenId" />
+    </Key>
+    <Property Name="ChildrenId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FamilyId" Type="Int32" Nullable="false" />
+    <Property Name="Firstname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Lastname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="Permission" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Family" Relationship="Self.FK_Children_Family" FromRole="Children" ToRole="Families" />
+    <NavigationProperty Name="Participants" Relationship="Self.FK_Participant_Children" FromRole="Children" ToRole="Participants" />
+  </EntityType>
+  <EntityType Name="Event">
+    <Key>
+      <PropertyRef Name="EventId" />
+    </Key>
+    <Property Name="EventId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MeetId" Type="Int32" Nullable="false" />
+    <Property Name="AgeRange" Type="Int32" Nullable="false" />
+    <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="Distance" Type="Int32" Nullable="false" />
+    <Property Name="Stroke" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Round" Type="Int32" Nullable="false" />
+    <Property Name="StartTime" Type="Time" Nullable="false" Precision="7" />
+    <Property Name="EndTime" Type="Time" Nullable="false" Precision="7" />
+    <NavigationProperty Name="Meet" Relationship="Self.FK_Event_Meet" FromRole="Events" ToRole="Meets" />
+    <NavigationProperty Name="Participants" Relationship="Self.FK_Participant_Event" FromRole="Events" ToRole="Participants" />
+  </EntityType>
+  <EntityType Name="Family">
+    <Key>
+      <PropertyRef Name="FamilyId" />
+    </Key>
+    <Property Name="FamilyId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ContactNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="AddressLine" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="AddressArea" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="AddressPostcode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Children" Relationship="Self.FK_Children_Family" FromRole="Families" ToRole="Children" />
+    <NavigationProperty Name="Parents" Relationship="Self.FK_Parent_Family" FromRole="Families" ToRole="Parents" />
+  </EntityType>
+  <EntityType Name="Meet">
+    <Key>
+      <PropertyRef Name="MeetId" />
+    </Key>
+    <Property Name="MeetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Venue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="PoolLength" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Events" Relationship="Self.FK_Event_Meet" FromRole="Meets" ToRole="Events" />
+  </EntityType>
+  <EntityType Name="Parent">
+    <Key>
+      <PropertyRef Name="ParentId" />
+    </Key>
+    <Property Name="ParentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FamilyId" Type="Int32" Nullable="false" />
+    <Property Name="Firstname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Lastname" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Gender" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Family" Relationship="Self.FK_Parent_Family" FromRole="Parents" ToRole="Families" />
+  </EntityType>
+  <EntityType Name="Participant">
+    <Key>
+      <PropertyRef Name="ParticipantId" />
+    </Key>
+    <Property Name="ParticipantId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EventId" Type="Int32" Nullable="false" />
+    <Property Name="ChildrenId" Type="Int32" Nullable="false" />
+    <Property Name="Lane" Type="Int32" Nullable="false" />
+    <Property Name="Time" Type="Time" Precision="7" />
+    <NavigationProperty Name="Child" Relationship="Self.FK_Participant_Children" FromRole="Participants" ToRole="Children" />
+    <NavigationProperty Name="Event" Relationship="Self.FK_Participant_Event" FromRole="Participants" ToRole="Events" />
+  </EntityType>
+  <Association Name="FK_Children_Family">
+    <End Role="Families" Type="Self.Family" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Children" Type="Self.Child" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Families">
+        <PropertyRef Name="FamilyId" />
+      </Principal>
+      <Dependent Role="Children">
+        <PropertyRef Name="FamilyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Participant_Children">
+    <End Role="Children" Type="Self.Child" Multiplicity="1" />
+    <End Role="Participants" Type="Self.Participant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Children">
+        <PropertyRef Name="ChildrenId" />
+      </Principal>
+      <Dependent Role="Participants">
+        <PropertyRef Name="ChildrenId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Event_Meet">
+    <End Role="Meets" Type="Self.Meet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Events" Type="Self.Event" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meets">
+        <PropertyRef Name="MeetId" />
+      </Principal>
+      <Dependent Role="Events">
+        <PropertyRef Name="MeetId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Participant_Event">
+    <End Role="Events" Type="Self.Event" Multiplicity="1" />
+    <End Role="Participants" Type="Self.Participant" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Events">
+        <PropertyRef Name="EventId" />
+      </Principal>
+      <Dependent Role="Participants">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Parent_Family">
+    <End Role="Families" Type="Self.Family" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Parents" Type="Self.Parent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Families">
+        <PropertyRef Name="FamilyId" />
+      </Principal>
+      <Dependent Role="Parents">
+        <PropertyRef Name="FamilyId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DatabaseEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Archives" EntityType="Self.Archive" />
+    <EntitySet Name="Children" EntityType="Self.Child" />
+    <EntitySet Name="Events" EntityType="Self.Event" />
+    <EntitySet Name="Families" EntityType="Self.Family" />
+    <EntitySet Name="Meets" EntityType="Self.Meet" />
+    <EntitySet Name="Parents" EntityType="Self.Parent" />
+    <EntitySet Name="Participants" EntityType="Self.Participant" />
+    <AssociationSet Name="FK_Children_Family" Association="Self.FK_Children_Family">
+      <End Role="Families" EntitySet="Families" />
+      <End Role="Children" EntitySet="Children" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Participant_Children" Association="Self.FK_Participant_Children">
+      <End Role="Children" EntitySet="Children" />
+      <End Role="Participants" EntitySet="Participants" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Event_Meet" Association="Self.FK_Event_Meet">
+      <End Role="Meets" EntitySet="Meets" />
+      <End Role="Events" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Participant_Event" Association="Self.FK_Participant_Event">
+      <End Role="Events" EntitySet="Events" />
+      <End Role="Participants" EntitySet="Participants" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Parent_Family" Association="Self.FK_Parent_Family">
+      <End Role="Families" EntitySet="Families" />
+      <End Role="Parents" EntitySet="Parents" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
