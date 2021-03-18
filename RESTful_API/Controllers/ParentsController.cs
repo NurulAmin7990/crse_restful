@@ -64,21 +64,11 @@ namespace RESTful_API.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult PutParent(int id, Parent parent)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (id != parent.ParentId)
             {
                 return BadRequest();
             }
-
-            if (ModelState.IsValid)
-            {
                 db.Entry(parent).State = EntityState.Modified;
-            }
-
             try
             {
                 db.SaveChanges();
@@ -94,7 +84,6 @@ namespace RESTful_API.Controllers
                     throw;
                 }
             }
-
             return StatusCode(HttpStatusCode.OK);
         }
 

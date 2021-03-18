@@ -11,7 +11,8 @@ namespace RESTful_API.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Parent
     {
         public int ParentId { get; set; }
