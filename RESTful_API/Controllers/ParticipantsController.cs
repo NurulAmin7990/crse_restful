@@ -46,8 +46,6 @@ namespace RESTful_API.Controllers
             {
                 return NotFound();
             }
-            else
-            {
                 ParticipantViewModel participantViewModel = new ParticipantViewModel
                 {
                     @event = Url.Link("getEvent", new { id = participant.EventId }),
@@ -56,7 +54,6 @@ namespace RESTful_API.Controllers
                     Time = participant.Time
                 };
                 return Ok(participantViewModel);
-            }
         }
 
         // PUT: api/Participants/5
@@ -100,14 +97,45 @@ namespace RESTful_API.Controllers
         [ResponseType(typeof(Participant))]
         public IHttpActionResult PostParticipant(Participant participant)
         {
+            Child child = db.Children.Find(participant.ChildrenId);
+            Event @event = db.Events.Find(participant.EventId);
+            int age = DateTime.Today.Year - child.DateOfBirth.Year;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            if(child == null && @event == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if (child.Permission == true && age <= @event.AgeRange)
+                {
+                    db.Participants.Add(participant);
+                    db.SaveChanges();
+                    return CreatedAtRoute("getParticipant", new { id = participant.ParticipantId }, participant);
+                }
+                else
+                {
+                    return Ok(new { response = "Swimmer does not meet criteria, try again." });
+                }
+            }
+        }
 
-            db.Participants.Add(participant);
+        // PUT: api/Participants/1
+        [Route("{id}")]
+        [ResponseType(typeof(Participant))]
+        public IHttpActionResult PutParticipantTime(int id, TimeSpan time)
+        {
+            Participant participant = db.Participants.Find(id);
+            if (participant == null)
+            {
+                return NotFound();
+            }
+            participant.Time = time;
+            db.Entry(participant).State = EntityState.Modified;
             db.SaveChanges();
-
             return CreatedAtRoute("getParticipant", new { id = participant.ParticipantId }, participant);
         }
 

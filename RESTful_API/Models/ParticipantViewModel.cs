@@ -11,7 +11,7 @@ namespace RESTful_API.Models
     {
         [DataMember(Name = "event")]
         public string @event { get; set; }
-        [DataMember(Name = "event")]
+        [DataMember(Name = "swimmer")]
         public string children { get; set; }
         [DataMember(Name = "lane")]
         public int Lane { get; set; }
