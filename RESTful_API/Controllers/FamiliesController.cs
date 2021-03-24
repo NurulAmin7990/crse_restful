@@ -6,8 +6,12 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using RESTful_API.Models;
 
 namespace RESTful_API.Controllers
@@ -16,6 +20,14 @@ namespace RESTful_API.Controllers
     public class FamiliesController : ApiController
     {
         private DatabaseEntities db = new DatabaseEntities();
+        protected ApplicationDbContext ApplicationDbContext { get; set; }
+        protected UserManager<ApplicationUser> UserManager { get; set; }
+
+        public FamiliesController()
+        {
+            this.ApplicationDbContext = new ApplicationDbContext();
+            this.UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this.ApplicationDbContext));
+        }
 
         [Route("")]
         // GET: api/Families
@@ -77,6 +89,42 @@ namespace RESTful_API.Controllers
         public IHttpActionResult GetFamily(int id)
         {
             Family family = db.Families.Find(id);
+            List<String> childrenUrl = new List<string>();
+            List<String> parentUrl = new List<string>();
+            foreach (Child child in family.Children)
+            {
+                childrenUrl.Add(Url.Link("getChildren", new { id = child.ChildrenId }));
+            }
+            foreach (Parent parent in family.Parents)
+            {
+                parentUrl.Add(Url.Link("getParent", new { id = parent.ParentId }));
+            }
+            FamilyViewModel familyViewModel = new FamilyViewModel
+            {
+                ContactNumber = family.ContactNumber,
+                Email = family.Email,
+                AddressLine = family.AddressLine,
+                AddressArea = family.AddressArea,
+                AddressPostcode = family.AddressPostcode,
+                Children = childrenUrl,
+                Parent = parentUrl
+            };
+            if (family == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(familyViewModel);
+        }
+
+        [Route("view")]
+        // GET: api/Families
+        [Authorize(Roles = "parent")]
+        [ResponseType(typeof(FamilyViewModel))]
+        public IHttpActionResult GetParentFamily()
+        {
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            Family family = db.Families.FirstOrDefault(f => f.Email == user.Email);
             List<String> childrenUrl = new List<string>();
             List<String> parentUrl = new List<string>();
             foreach (Child child in family.Children)

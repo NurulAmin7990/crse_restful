@@ -6,8 +6,11 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using RESTful_API.Models;
 
 namespace RESTful_API.Controllers
@@ -85,6 +88,25 @@ namespace RESTful_API.Controllers
                 }
             }
             return StatusCode(HttpStatusCode.OK);
+        }
+
+        [Route("")]
+        // PUT: api/Parent
+        [Authorize(Roles = "parent")]
+
+        [ResponseType(typeof(Parent))]
+        public IHttpActionResult PutParent(string number)
+        {
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            Family family = db.Families.FirstOrDefault(f => f.Email == user.Email);
+            if (family == null)
+            {
+                return NotFound();
+            }
+            family.ContactNumber = number;
+            db.Entry(family).State = EntityState.Modified;
+            db.SaveChanges();
+            return CreatedAtRoute("getFamily", new { id = family.FamilyId }, family);
         }
 
         [Route("")]
