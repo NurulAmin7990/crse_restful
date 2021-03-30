@@ -40,6 +40,76 @@ namespace RESTful_API.Controllers
             return childs;
         }
 
+        [Route("")]
+        public List<SwimmerViewModel> GetChildrenByAge(int age)
+        {
+            List<SwimmerViewModel> swimmer = new List<SwimmerViewModel>();
+            foreach(Child child in db.Children.ToList())
+            {
+                int childAge = int.Parse(DateTime.Today.Year.ToString()) - int.Parse(child.DateOfBirth.Year.ToString());
+                if(child.Permission == true && childAge == age)
+                {
+                    swimmer.Add(new SwimmerViewModel {
+                        Firstname = child.Firstname,
+                        Lastname = child.Lastname,
+                        DateOfBirth = child.DateOfBirth,
+                        Gender = child.Gender,
+                        Permission = child.Permission
+                    });
+                }
+            }
+            return swimmer;
+        }
+
+        [Route("")]
+        public List<SwimmerViewModel> GetChildrenByStroke(String stroke)
+        {
+            List<SwimmerViewModel> swimmer = new List<SwimmerViewModel>();
+            foreach (Child child in db.Children.ToList())
+            {
+                if (child.Permission == true)
+                {
+                    foreach(Participant participant in child.Participants)
+                    {
+                        if(participant.Event.Stroke == stroke)
+                        {
+                            swimmer.Add(new SwimmerViewModel
+                            {
+                                Firstname = child.Firstname,
+                                Lastname = child.Lastname,
+                                DateOfBirth = child.DateOfBirth,
+                                Gender = child.Gender,
+                                Permission = child.Permission
+                            });
+                        }
+                    }
+                }
+            }
+            return swimmer;
+        }
+
+        [Route("")]
+        public List<SwimmerViewModel> GetChildrenByName(String name)
+        {
+            List<SwimmerViewModel> swimmer = new List<SwimmerViewModel>();
+            foreach (Child child in db.Children.ToList())
+            {
+                String fullName = child.Firstname + " " + child.Lastname;
+                if (child.Permission == true && fullName == name)
+                {
+                            swimmer.Add(new SwimmerViewModel
+                            {
+                                Firstname = child.Firstname,
+                                Lastname = child.Lastname,
+                                DateOfBirth = child.DateOfBirth,
+                                Gender = child.Gender,
+                                Permission = child.Permission
+                            });
+                }
+            }
+            return swimmer;
+        }
+
         [Route("{id}", Name = "getChildren")]
         // GET: api/Children/5
         [ResponseType(typeof(SwimmerViewModel))]

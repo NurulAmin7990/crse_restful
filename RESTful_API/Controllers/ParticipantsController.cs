@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -6,8 +7,11 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using RESTful_API.Models;
 
 namespace RESTful_API.Controllers
@@ -46,14 +50,79 @@ namespace RESTful_API.Controllers
             {
                 return NotFound();
             }
-                ParticipantViewModel participantViewModel = new ParticipantViewModel
+            ParticipantViewModel participantViewModel = new ParticipantViewModel
+            {
+                @event = Url.Link("getEvent", new { id = participant.EventId }),
+                children = Url.Link("getChildren", new { id = participant.ChildrenId }),
+                Lane = participant.Lane,
+                Time = participant.Time
+            };
+            return Ok(participantViewModel);
+        }
+
+        // GET: api/Participants/5
+        [Route("personal")]
+        [Authorize(Roles = "swimmer")]
+        [ResponseType(typeof(SwimmerCustomViewModel))]
+        public IHttpActionResult GetSwimmerView()
+        {
+            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(System.Web.HttpContext.Current.User.Identity.GetUserId());
+            Participant participant = db.Participants.FirstOrDefault(p => p.Child.Family.Email == user.Email);
+            if (participant == null)
+            {
+                return NotFound();
+            }
+            List<EventViewModel> events = new List<EventViewModel>();
+            List<MeetsViewModel> meets = new List<MeetsViewModel>();
+            List<ParticipantViewModel> races = new List<ParticipantViewModel>();
+
+            races.Add(new ParticipantViewModel
+            {
+                @event = Url.Link("getEvent", new { id = participant.EventId }),
+                Lane = participant.Lane,
+                Time = participant.Time
+            });
+
+            foreach (Event e in db.Events)
+            {
+                if(e.EventId == participant.EventId)
                 {
-                    @event = Url.Link("getEvent", new { id = participant.EventId }),
-                    children = Url.Link("getChildren", new { id = participant.ChildrenId }),
-                    Lane = participant.Lane,
-                    Time = participant.Time
-                };
-                return Ok(participantViewModel);
+                    events.Add(new EventViewModel
+                    {
+                        AgeRange = e.AgeRange,
+                        Distance = e.Distance,
+                        EndTime = e.EndTime,
+                        Gender = e.Gender,
+                        Round = e.Round,
+                        Meet = e.Meet.Name,
+                        StartTime = e.StartTime,
+                        Stroke = e.Stroke
+                    });
+                    foreach (Meet m in db.Meets.ToList())
+                    {
+                        if (m.MeetId == e.MeetId)
+                        {
+                            meets.Add(new MeetsViewModel
+                            {
+                                Name = m.Name,
+                                Date = m.Date,
+                                PoolLength = m.PoolLength,
+                                Venue = m.Venue
+                            });
+                        }
+                    }
+                }
+            }
+            SwimmerCustomViewModel swimmerCustomViewModel = new SwimmerCustomViewModel
+            {
+                Name = participant.Child.Firstname + " " + participant.Child.Lastname,
+                DateOfBirth = participant.Child.DateOfBirth,
+                Gender = participant.Child.Gender,
+                Races = races,
+                Events = events,
+                Meets = meets
+            };
+            return Ok(swimmerCustomViewModel);
         }
 
         // PUT: api/Participants/5
