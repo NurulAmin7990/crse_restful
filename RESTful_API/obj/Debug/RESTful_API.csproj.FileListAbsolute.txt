@@ -328,3 +328,9 @@ D:\Documents\Project\crse_restful\RESTful_API\bin\roslyn\System.Runtime.Compiler
 D:\Documents\Project\crse_restful\RESTful_API\bin\Microsoft.Owin.Cors.dll
 D:\Documents\Project\crse_restful\RESTful_API\bin\System.Web.Cors.dll
 D:\Documents\Project\crse_restful\RESTful_API\bin\Microsoft.Owin.Cors.xml
+D:\Documents\Project\crse_restful\RESTful_API\bin\Castle.Core.dll
+D:\Documents\Project\crse_restful\RESTful_API\bin\System.Runtime.CompilerServices.Unsafe.dll
+D:\Documents\Project\crse_restful\RESTful_API\bin\System.Threading.Tasks.Extensions.dll
+D:\Documents\Project\crse_restful\RESTful_API\bin\Castle.Core.xml
+D:\Documents\Project\crse_restful\RESTful_API\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\Documents\Project\crse_restful\RESTful_API\bin\System.Threading.Tasks.Extensions.xml
