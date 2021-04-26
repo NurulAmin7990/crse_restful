@@ -64,6 +64,7 @@ namespace RESTful_API.Controllers
 
         [Route("{id}")]
         // PUT: api/Parents/5
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutParent(int id, Parent parent)
         {
@@ -111,6 +112,7 @@ namespace RESTful_API.Controllers
 
         [Route("")]
         // POST: api/Parents
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Parent))]
         public IHttpActionResult PostParent(Parent parent)
         {
@@ -141,8 +143,10 @@ namespace RESTful_API.Controllers
 
             return Ok(parent);
         }
+
         [Route("Archive/{id}")]
         [ResponseType(typeof(ArchiveParentViewModel))]
+        [Authorize(Roles = "staff")]
         //POST: api/Parents/Archive/2
         public IHttpActionResult PostArchive(int id)
         {

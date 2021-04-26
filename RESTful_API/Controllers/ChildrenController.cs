@@ -144,6 +144,7 @@ namespace RESTful_API.Controllers
 
         [Route("{id}")]
         // PUT: api/Children/5
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(void))]
         public IHttpActionResult PutChild(int id, Child child)
         {
@@ -180,6 +181,7 @@ namespace RESTful_API.Controllers
 
         [Route("")]
         // POST: api/Children
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Child))]
         public IHttpActionResult PostChild(Child child)
         {
@@ -209,6 +211,38 @@ namespace RESTful_API.Controllers
             db.SaveChanges();
 
             return Ok(child);
+        }
+
+        [Route("Archive/{id}")]
+        [ResponseType(typeof(ArchiveParentViewModel))]
+        [Authorize(Roles = "staff")]
+        //POST: api/Children/Archive/2
+        public IHttpActionResult PostArchive(int id)
+        {
+            Child child = db.Children.Find(id);
+            if (child == null)
+            {
+                return NotFound();
+            }
+            Archive archive = new Archive
+            {
+                DateOfBirth = child.DateOfBirth,
+                Firstname = child.Firstname,
+                Lastname = child.Lastname,
+                Gender = child.Gender,
+                Type = "Child"
+            };
+            db.Archives.Add(archive);
+            db.Children.Remove(child);
+            db.SaveChanges();
+            ArchiveParentViewModel archiveView = new ArchiveParentViewModel
+            {
+                Firstname = archive.Firstname,
+                Lastname = archive.Lastname,
+                DateOfBirth = archive.DateOfBirth,
+                Gender = archive.Gender
+            };
+            return Ok(archiveView);
         }
 
         protected override void Dispose(bool disposing)

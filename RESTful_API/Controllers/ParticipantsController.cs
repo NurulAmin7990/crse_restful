@@ -70,7 +70,7 @@ namespace RESTful_API.Controllers
             Participant participant = db.Participants.FirstOrDefault(p => p.Child.Family.Email == user.Email);
             if (participant == null)
             {
-                return NotFound();
+                return Content(HttpStatusCode.NotFound, "You are not participating in any events.");
             }
             List<EventViewModel> events = new List<EventViewModel>();
             List<MeetsViewModel> meets = new List<MeetsViewModel>();
@@ -163,6 +163,7 @@ namespace RESTful_API.Controllers
 
         // POST: api/Participants
         [Route("")]
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Participant))]
         public IHttpActionResult PostParticipant(Participant participant)
         {
@@ -194,6 +195,7 @@ namespace RESTful_API.Controllers
 
         // PUT: api/Participants/1
         [Route("{id}")]
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Participant))]
         public IHttpActionResult PutParticipantTime(int id, TimeSpan time)
         {

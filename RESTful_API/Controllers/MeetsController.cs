@@ -129,6 +129,7 @@ namespace RESTful_API.Controllers
         }
         [Route("")]
         // POST: api/Meets
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Meet))]
         public IHttpActionResult PostMeet(Meet meet)
         {

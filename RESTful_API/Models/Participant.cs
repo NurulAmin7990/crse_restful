@@ -13,6 +13,7 @@
 
 namespace RESTful_API.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -23,7 +24,9 @@ namespace RESTful_API.Models
         public int ChildrenId { get; set; }
         public int Lane { get; set; }
         public Nullable<System.TimeSpan> Time { get; set; }
+        [JsonIgnore]
         public virtual Child Child { get; set; }
+        [JsonIgnore]
         public virtual Event Event { get; set; }
     }
 }

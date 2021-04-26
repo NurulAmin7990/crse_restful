@@ -191,6 +191,7 @@ namespace RESTful_API.Controllers
 
         [Route("")]
         // POST: api/Families
+        [Authorize(Roles = "staff")]
         [ResponseType(typeof(Family))]
         public IHttpActionResult PostFamily(Family family)
         {

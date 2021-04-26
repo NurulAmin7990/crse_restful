@@ -108,6 +108,7 @@ namespace RESTful_API.Controllers
         // POST: api/Events
         [Route("")]
         [ResponseType(typeof(Event))]
+        [Authorize(Roles = "staff")]
         public IHttpActionResult PostEvent(Event @event)
         {
             if (!ModelState.IsValid)
