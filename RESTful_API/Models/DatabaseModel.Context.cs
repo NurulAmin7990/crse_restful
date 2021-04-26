@@ -10,6 +10,7 @@
 namespace RESTful_API.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
@@ -24,7 +25,7 @@ namespace RESTful_API.Models
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
         public virtual DbSet<Archive> Archives { get; set; }
         public virtual DbSet<Child> Children { get; set; }
         public virtual DbSet<Event> Events { get; set; }

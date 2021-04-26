@@ -15,7 +15,16 @@ namespace RESTful_API.Controllers
     [RoutePrefix("api/children")]
     public class ChildrenController : ApiController
     {
-        private DatabaseEntities db = new DatabaseEntities();
+        private DatabaseEntities db;
+
+        public ChildrenController()
+        {
+            this.db = new DatabaseEntities();
+        }
+        public ChildrenController(DatabaseEntities @object)
+        {
+            this.db = @object;
+        }
 
         [Route("")]
         // GET: api/Children
@@ -33,7 +42,7 @@ namespace RESTful_API.Controllers
                         DateOfBirth = child.DateOfBirth,
                         Gender = child.Gender,
                         Permission = child.Permission,
-                        FamilyUrl = Url.Link("getFamily", new { id = child.Family.FamilyId })
+                        FamilyUrl = Url.Link("getFamily", new { id = child.Family.FamilyId, Action = "GetFamily", Controller = "Families" })
                     }
                     );
             }
@@ -115,7 +124,7 @@ namespace RESTful_API.Controllers
         [ResponseType(typeof(SwimmerViewModel))]
         public IHttpActionResult GetChild(int id)
         {
-            Child child = db.Children.Find(id);
+            Child child = db.Children.FirstOrDefault(x => x.ChildrenId == id);
             SwimmerViewModel swimmerViewModel = new SwimmerViewModel
             {
                 Firstname = child.Firstname,
